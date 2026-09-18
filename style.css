@@ -76,3 +76,24 @@ footer {
   color: var(--mute);
   font-size: 0.9rem;
 }
+
+a { color: var(--ice); }
+main.wide { max-width: 64rem; }
+h3 { font-weight: normal; font-size: 1rem; color: var(--mute); margin-top: 1.5rem; }
+blockquote {
+  margin: 1rem 0 0;
+  padding-left: 1rem;
+  border-left: 2px solid var(--ice);
+  font-style: italic;
+}
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(9rem, 1fr));
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+.grid img { width: 100%; aspect-ratio: 1; object-fit: cover; display: block; }
+.warn { color: #e0a36b; border: 1px solid #e0a36b; padding: 0.5rem 0.75rem; }
+nav { margin: 1rem 0; }
+main.wide p { margin: 0.35rem 0; font-size: 0.95rem; }
+pre { white-space: pre-wrap; font-size: 0.85rem; color: var(--mute); }

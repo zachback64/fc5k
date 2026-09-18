@@ -41,3 +41,10 @@ If that Namecheap account is yours:
 4. Pages → Custom domain → `fc5k.org` → enforce HTTPS
 
 If it is not yours, either buy it from the current registrant or pick another domain (`thefc5k.org`, `frozenicicle.org`, etc.).
+
+## Data and pages
+
+- `data/public.json` — public-safe facts per year. Source for `history.html` and the Hall of Glory.
+- `python3 scripts/build.py` — rebuilds `history.html` (public) and `admin/index.html` (private).
+- `admin/`, `data/private/`, `photos/private/` are gitignored because this repo is public. They hold guest lists, posts, notes and every photo, and only exist on Zach's Mac. Open the admin page with `python3 -m http.server` then `/admin/`.
+- To publish a photo: copy a JPG into `photos/public/<year>/` and rebuild.

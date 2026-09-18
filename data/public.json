@@ -1,0 +1,12 @@
+{
+  "editions": [
+    {"year": 2018, "edition": "Uno", "date": "Thursday, December 27, 2018", "winner": "Zach", "gun": "4:30pm, in the dark, flashlights encouraged", "went": "7", "course": "Zach’s to Butterfield Park to Adam’s. 3.3 miles.", "notes": "Rain or shine. Trophies for first, last, most clothed, least clothed, and Candy Cane Collectors. Finished at a hot tub.", "quotes": ["Come one and all to the first (annual?) Freezing Cold 5K!!", "RAIN OR SHINE"]},
+    {"year": 2019, "edition": "Dos", "date": "Sunday, December 22, 2019", "winner": "Kayla", "gun": "4:30pm", "went": "6", "course": "Zach’s to Butterfield Park to Adam’s", "notes": "Hot tub confirmed to be hot."},
+    {"year": 2020, "edition": "Tres", "date": "Saturday, December 26, 2020", "winner": "Adam", "temp": "26°F", "gun": "3:00pm", "went": "5", "course": "Reversed for fire pit logistics: Adam’s to Butterfield Park to Zach’s", "notes": "Outdoors, distanced, masked. Masks turn out to be convenient below freezing.", "quotes": ["I think it is still reasonable to uphold this sacred, three-year-old tradition."]},
+    {"year": 2021, "edition": "Cuatro", "date": "Sunday, December 26, 2021", "winner": "Zach", "gun": "3:00pm", "went": "9", "course": "Adam’s to Butterfield Park to Zach’s", "notes": "Hot tub afterwards. Bring a bathing suit."},
+    {"year": 2022, "edition": "Cinco", "date": "Monday, December 26, 2022", "winner": "Adam", "gun": "3:00pm", "went": "16", "course": "Zach’s to Butterfield Park and back", "notes": "First shirts: the FC5K V long sleeve. First year on Partiful.", "quotes": ["We run the FC5K because the weather tells us not to. Because our bodies fight it with every cell. Because together we overcome, together we run."]},
+    {"year": 2023, "edition": "Seis", "date": "Friday, December 29, 2023", "winner": "Zach", "time": "23:30", "temp": "39°F", "gun": "3:00pm", "went": "10", "course": "Zach’s to Butterfield Park and back", "notes": "Hot tub fully operational.", "quotes": ["Holy crap we made it to six."]},
+    {"year": 2024, "edition": "Siete", "date": "Thursday, December 26, 2024", "winner": "Adam", "gun": "4:00pm", "went": "11", "notes": "Snacks and hot chocolate at 3. Pizza after.", "quotes": ["Here we are again. Can you believe it?"]},
+    {"year": 2025, "edition": "Ocho", "date": "Friday, December 26, 2025", "winner": "Adam", "temp": "42°F", "gun": "3:00pm", "went": "10", "course": "Zach’s to Jack’s to Kayla’s and back", "notes": "The trophy arrived by CTA.", "quotes": ["Be prepared. Be cold. Be fast. Be merry. Be there."]}
+  ]
+}
