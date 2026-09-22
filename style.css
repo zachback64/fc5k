@@ -49,18 +49,9 @@ main.wide { max-width: 64rem; }
   position: relative;
 }
 .hero .logo { width: min(62vw, 300px); height: auto; display: block; margin: 0 auto; }
-.hero .logo .ring { font-family: Anton, Impact, sans-serif; font-size: 27px; letter-spacing: 0.08em; fill: var(--ink); }
+.hero .logo .ring { font-family: Anton, Impact, sans-serif; font-size: 30px; letter-spacing: 0.06em; fill: var(--ink); }
 .hero h1 { margin-top: 1rem; color: var(--red); }
 .hero .sub { font-size: 1.15rem; margin-top: 0.4rem; }
-.countdown {
-  display: inline-grid;
-  grid-auto-flow: column;
-  gap: 1.2rem;
-  margin-top: 1.5rem;
-}
-.countdown div { text-align: center; }
-.countdown b { display: block; font-family: Anton, Impact, sans-serif; font-size: 2.6rem; line-height: 1; font-variant-numeric: tabular-nums; }
-.countdown small { color: var(--mute); text-transform: uppercase; letter-spacing: 0.1em; font-size: 0.7rem; }
 .cta {
   display: inline-block;
   margin-top: 1.5rem;
@@ -75,11 +66,10 @@ main.wide { max-width: 64rem; }
   transform: rotate(-2deg);
   transition: transform 120ms ease;
 }
-.cta:hover { transform: rotate(1deg) scale(1.04); }
 
 .charter { text-align: center; margin: 3rem 0; }
 .charter p { font-family: Anton, Impact, sans-serif; font-size: clamp(1.8rem, 6vw, 3rem); text-transform: uppercase; margin: 0; line-height: 1.15; }
-.charter p:nth-child(odd) { color: var(--red); }
+
 
 dl { margin: 0; }
 dt { color: var(--mute); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em; margin-top: 0.9rem; }
@@ -90,26 +80,12 @@ th, td { text-align: left; padding: 0.45rem 0.5rem 0.45rem 0; border-bottom: 1px
 th { color: var(--mute); font-weight: 600; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.08em; }
 td.icicle { font-family: Anton, Impact, sans-serif; font-size: 1.15rem; }
 
-.trophies { display: grid; grid-template-columns: repeat(auto-fill, minmax(12rem, 1fr)); gap: 0.8rem; margin-top: 1rem; }
-.trophies div { border: 3px solid var(--ink); padding: 0.9rem; transform: rotate(var(--r, 0deg)); background: #fff; }
-.trophies div:nth-child(2n) { --r: 1deg; } .trophies div:nth-child(3n) { --r: -1.2deg; }
-.trophies b { display: block; font-family: Anton, Impact, sans-serif; font-size: 1.25rem; text-transform: uppercase; }
-.trophies small { color: var(--mute); }
 
-.lore li { margin: 0.7rem 0; }
-.lore b { font-family: Anton, Impact, sans-serif; color: var(--red); font-size: 1.15rem; margin-right: 0.4rem; }
 
-.course { width: 100%; height: auto; margin-top: 1rem; }
-.course text { font-family: Anton, Impact, sans-serif; font-size: 13px; text-transform: uppercase; letter-spacing: 0.05em; }
 
 blockquote { margin: 1.2rem 0 0; padding-left: 1rem; border-left: 4px solid var(--red); font-style: italic; }
 
-.faq details { border-top: 1px solid #ddd; padding: 0.7rem 0; }
-.faq summary { cursor: pointer; font-weight: 600; }
 
-.merch { display: grid; grid-template-columns: repeat(auto-fill, minmax(9rem, 1fr)); gap: 1rem; text-align: center; margin-top: 1rem; }
-.merch svg { width: 100%; height: auto; }
-.merch small { display: block; color: var(--mute); }
 
 .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(9rem, 1fr)); gap: 0.5rem; margin-top: 1rem; }
 .grid img { width: 100%; aspect-ratio: 1; object-fit: cover; display: block; }
@@ -119,16 +95,6 @@ pre { white-space: pre-wrap; font-size: 0.85rem; color: var(--mute); }
 
 footer { text-align: center; padding: 2rem 1.5rem 3rem; color: var(--mute); font-size: 0.9rem; border-top: 4px solid var(--red); }
 
-/* falling splats */
-.snow { position: fixed; inset: 0; pointer-events: none; z-index: -1; overflow: hidden; }
-.snow span {
-  position: absolute; top: -40px;
-  width: 22px; height: 22px;
-  background: url("logo.svg") center/contain no-repeat;
-  opacity: 0.18;
-  animation: fall linear infinite;
-}
-@keyframes fall {
-  to { transform: translateY(110vh) rotate(360deg); }
-}
-@media (prefers-reduced-motion: reduce) { .snow { display: none; } }
+
+.count { color: var(--mute); margin-top: 1rem; }
+ul { padding-left: 1.2rem; }
