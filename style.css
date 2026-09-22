@@ -67,8 +67,6 @@ main.wide { max-width: 64rem; }
   transition: transform 120ms ease;
 }
 
-.charter { text-align: center; margin: 3rem 0; }
-.charter p { font-family: Anton, Impact, sans-serif; font-size: clamp(1.8rem, 6vw, 3rem); text-transform: uppercase; margin: 0; line-height: 1.15; }
 
 
 dl { margin: 0; }
