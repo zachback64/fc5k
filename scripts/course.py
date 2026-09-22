@@ -10,16 +10,16 @@ from pathlib import Path
 from valhalla import route
 
 START = (41.893837, -87.935259)   # 238 S Kenmore (Census geocoder, house-level)
-PARK = (41.895356, -87.942581)  # Wilder Park east path, where Cottage Hill meets it
+PARK = (41.89451, -87.94259)        # Wilder Park SE corner, Church & Cottage Hill
 
 OUT = [START, (41.89441, -87.93998), PARK]   # Church St, York, Elmwood Terrace, Cottage Hill
-LAP = [PARK,
-       (41.89841, -87.94255),       # up the park's east path to the NE corner
-       (41.89803, -87.94486),       # across the top to Alexander & Prospect
-       (41.89794, -87.94905),       # west on Alexander past the college
-       (41.89778, -87.95207),       # Fairfield Ave, turn south
-       (41.89425, -87.94948),       # Elm Park Ave, turn east
-       (41.89442, -87.94488),       # Prospect & Church, park SW corner
+LAP = [PARK,                        # counter-clockwise, every turn is a left
+       (41.89529, -87.94398),       # into the park, up the middle path
+       (41.89758, -87.94475),       # out the park's west side at Prospect
+       (41.89794, -87.94905),       # left on Alexander, west along the college
+       (41.89778, -87.95207),       # left on Fairfield
+       (41.89425, -87.94948),       # left on Elm Park
+       (41.89442, -87.94488),       # Elm Park becomes Church at Prospect
        PARK]
 
 if __name__ == "__main__":
