@@ -6,7 +6,7 @@
   <title>FC5K — Freezing Cold 5K</title>
   <meta name="description" content="The Freezing Cold 5K. Elmhurst, IL. December 26.">
   <link rel="icon" href="logo.svg">
-  <link rel="stylesheet" href="style.css?v=4">
+  <link rel="stylesheet" href="style.css?v=6">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
 </head>
 <body>
@@ -35,7 +35,7 @@
       <dl>
         <dt>Gather at 2</dt><dd>Hot chocolate and schnapps at my house.</dd>
         <dt>Gun at 3</dt><dd>Sharply. Be there for this part. It’s important.</dd>
-        <dt>Course</dt><dd>Kenmore to Wilder Park, through Elmhurst University, downtown, and back. 5.05 km / 3.14 mi. No St. Charles crossing.</dd>
+        <dt>Course</dt><dd>Out to Wilder Park, one lap around the park and the college, back. 4.9 km / 3.05 mi. No St. Charles crossing.</dd>
         <dt>After</dt><dd>Post race refreshment, award ceremony, party. Bring a change of clothes.</dd>
       </dl>
       <div class="mapwrap">
@@ -48,8 +48,8 @@
       </div>
       <ol class="cues">
         <li><b>Out.</b> Kenmore to Church, left on York, right on Elmwood Terrace, right on Cottage Hill, into Wilder Park.</li>
-        <li><b>One lap.</b> Up the park path, across the top, around the college and the football field, back to the park on Elm Park Ave.</li>
-        <li><b>Back.</b> Same way you came. Kenmore is the finish.</li>
+        <li><b>One lap.</b> Up the east path of Wilder Park to the top corner. Cross Prospect and go west on Alexander along the top of the college. Left on Fairfield, left on Elm Park, and follow Elm Park back to the park.</li>
+        <li><b>Back.</b> Cottage Hill to Church, right on York, left on Adelia, left on Kenmore. Finish at the splat.</li>
       </ol>
       <p>You don’t have to run the 5K to enjoy the FC5K. Come late, come for five minutes, come whenever your work schedule permits.</p>
     </section>
@@ -111,7 +111,7 @@
     fetch('data/course.json').then(function (r) { return r.json(); }).then(function (c) {
       var osm = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19, attribution: '&copy; OpenStreetMap' });
       var sat = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', { maxZoom: 19, attribution: 'Imagery &copy; Esri' });
-      var map = L.map('map', { layers: [osm], zoomSnap: 0.25, scrollWheelZoom: false });
+      var map = L.map('map', { layers: [osm], zoomSnap: 0.25, scrollWheelZoom: true });
       var casing = L.polyline(c.shape, { color: '#fff', weight: 9, opacity: 0.9, lineJoin: 'round' }).addTo(map);
       var line = L.polyline(c.shape, { color: '#ff1e00', weight: 5, opacity: 1, lineJoin: 'round' }).addTo(map);
       map.fitBounds(line.getBounds(), { padding: [24, 24] });
@@ -144,8 +144,7 @@
         wrap.classList.toggle('full', on);
         document.body.classList.toggle('noscroll', on);
         fullBtn.textContent = on ? 'Close' : 'Full screen';
-        map.scrollWheelZoom[on ? 'enable' : 'disable']();
-        setTimeout(function () { map.invalidateSize(); map.fitBounds(line.getBounds(), { padding: [24, 24] }); }, 50);
+                setTimeout(function () { map.invalidateSize(); map.fitBounds(line.getBounds(), { padding: [24, 24] }); }, 50);
       }
       fullBtn.onclick = function () { setFull(!wrap.classList.contains('full')); };
       document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && wrap.classList.contains('full')) setFull(false); });
