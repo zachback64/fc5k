@@ -28,7 +28,7 @@
       <dl>
         <dt>Gather at 2</dt><dd>Hot chocolate and schnapps at my house.</dd>
         <dt>Gun at 3</dt><dd>Sharply. Be there for this part. It’s important.</dd>
-        <dt>Course</dt><dd>Out to Wilder Park, one loop through the park and around the college, back the same way. 5.1 km / 3.2 mi. No St. Charles crossing.</dd>
+        <dt>Course</dt><dd>One loop, no doubling back: Glos Memorial Park, down the middle of Wilder Park, through the college, Wilder’s garden path, home. 4.9 km / 3 mi. No St. Charles crossing.</dd>
         <dt>After</dt><dd>Post race refreshment, award ceremony, party. Bring a change of clothes.</dd>
       </dl>
       <div class="mapwrap">
@@ -40,9 +40,11 @@
         </div>
       </div>
       <ol class="cues">
-        <li><b>Out.</b> North on Kenmore, left on Church, left on York, right on Elmwood Terrace, right on Cottage Hill. Into Wilder Park at Church.</li>
-        <li><b>The loop.</b> Every turn is a left. Through the middle of Wilder Park to Prospect. Left on Alexander along the top of the college. Left on Fairfield. Left on Elm Park, which turns into Church and brings you back to the park.</li>
-        <li><b>Back.</b> Same way you came. Finish at the splat.</li>
+        <li><b>Glos.</b> North on Kenmore, left on Marion, right on Arlington, left on Park Ave into Glos Memorial Park. Follow the path through and out the west side to York.</li>
+        <li><b>Wilder.</b> Cross York at Adelaide, west to Cottage Hill, into the top of Wilder Park. Take the main path down through the middle and out at Prospect.</li>
+        <li><b>College.</b> Cross Prospect, through Alumni Circle and the quad, down the west walkway, east along the bottom of campus back to Prospect at Church.</li>
+        <li><b>Garden.</b> Into Wilder’s southwest corner and along the garden path at the bottom of the park to Cottage Hill.</li>
+        <li><b>Home.</b> Church east, right on York, left on Adelia, left on Kenmore. Finish at the splat.</li>
       </ol>
       <p>You don’t have to run the 5K to enjoy the FC5K. Come late, come for five minutes, come whenever your work schedule permits.</p>
     </section>
@@ -109,7 +111,7 @@
       var line = L.polyline(c.shape, { color: '#ff1e00', weight: 5, opacity: 1, lineJoin: 'round' }).addTo(map);
       map.fitBounds(line.getBounds(), { padding: [24, 24] });
       L.marker(c.start, { icon: L.icon({ iconUrl: 'logo.svg', iconSize: [34, 34], iconAnchor: [17, 17] }), title: 'Start / finish' }).addTo(map).bindPopup('Start and finish. 238 S Kenmore.');
-      L.marker(c.park, { icon: L.divIcon({ className: 'pin', html: 'LAP', iconSize: [34, 22] }) }).addTo(map).bindPopup('Wilder Park. Do the loop once, all lefts, then head home.');
+      
       // km markers
       var d = 0, next = 1, R = 6371000;
       for (var i = 1; i < c.shape.length; i++) {

@@ -1,44 +1,79 @@
 #!/usr/bin/env python3
-"""Route the FC5K course on real streets/paths and write data/course.json.
+"""Route the FC5K course on real streets and park paths; write data/course.json.
 
-Course = out to Wilder Park, one lap around the park and Elmhurst University,
-back the same way. Edit the waypoint lists and run: python3 scripts/course.py
+One loop, no doubling back: Kenmore -> Glos Memorial Park -> across York ->
+Wilder Park top to bottom on the main path -> the college quad -> Wilder's
+southeast garden path -> Church -> home. Edit LEGS and run:
+    python3 scripts/course.py
 Routing: Valhalla public server, pedestrian costing, OpenStreetMap data.
+Each leg is <= 10 waypoints (server limit); legs are joined end to end.
 """
 import json
 from pathlib import Path
 from valhalla import route
+from spurs import spurs
 
 START = (41.893837, -87.935259)   # 238 S Kenmore (Census geocoder, house-level)
-PARK = (41.895356, -87.942581)      # Wilder Park east path, where you enter from Cottage Hill
 
-OUT = [START, (41.89441, -87.93998), PARK]   # Church St, York, Elmwood Terrace, Cottage Hill
-LAP = [PARK,                        # counter-clockwise, every turn is a left
-       (41.89561, -87.94395),       # onto Wilder Park's main path
-       (41.89659, -87.94364),       # the long curve up the middle of the park
-       (41.89755, -87.94440),
-       (41.89758, -87.94475),       # out the park's west side at Prospect
-       (41.89794, -87.94905),       # left on Alexander, west along the college
-       (41.89778, -87.95207),       # left on Fairfield
-       (41.89425, -87.94948),       # left on Elm Park
-       (41.89442, -87.94488),       # Elm Park becomes Church at Prospect
-       PARK]
+LEGS = [
+    ("Kenmore to Glos Memorial Park", [
+        START,
+        (41.8971, -87.9352),         # Kenmore & Marion
+        (41.8976, -87.9375),         # into Glos on the diagonal path
+        (41.89815, -87.93821),       # Glos, middle
+        (41.8985, -87.9395),         # out the west side to York & Adelaide
+    ]),
+    ("Across York into Wilder Park", [
+        (41.8985, -87.9395),
+        (41.8985, -87.9425),         # Adelaide & Cottage Hill
+        (41.89756, -87.94255),       # Wilder Park, northeast entrance
+    ]),
+    ("Down the middle of Wilder Park", [
+        (41.89756, -87.94255),
+        (41.89664, -87.94423),
+        (41.8971, -87.94371),        # main path
+        (41.89755, -87.9444),
+        (41.89758, -87.94475),       # out at Prospect
+    ]),
+    ("Through the college", [
+        (41.89758, -87.94475),
+        (41.8973, -87.94598),        # Alumni Circle
+        (41.8962, -87.9474),         # College Mall, the quad
+        (41.89597, -87.94877),       # west end of the quad walkway
+        (41.89536, -87.94882),       # south along the campus west walkway
+        (41.89489, -87.94579),       # east along the campus south walkway
+        (41.89442, -87.94488),       # Prospect & Church
+    ]),
+    ("Wilder Park's garden path", [
+        (41.89442, -87.94488),
+        (41.89463, -87.9445),        # southwest corner path
+        (41.89471, -87.9442),
+        (41.89465, -87.944),
+        (41.89452, -87.94379),
+        (41.89452, -87.94339),
+        (41.89451, -87.94259),       # out at Church & Cottage Hill
+    ]),
+    ("Church, York, Adelia, home", [
+        (41.89451, -87.94259),
+        (41.89441, -87.93998),       # Church & York
+        (41.89371, -87.93998),       # York & Adelia
+        START,
+    ]),
+]
 
 if __name__ == "__main__":
-    k1, s1, sh1, c1 = route(OUT)
-    k2, s2, sh2, c2 = route(LAP)
-    k3, s3, sh3, c3 = k1, s1, list(reversed(sh1)), []   # back the way you came
-    km = k1 + k2 + k3
-    shape = sh1 + sh2[1:] + sh3[1:]
-    out = {"km": round(km, 2), "miles": round(km * 0.621371, 2), "start": START, "park": PARK,
-           "legs": [{"name": "Out", "km": round(k1, 2), "cues": c1, "n": len(sh1)},
-                    {"name": "Lap", "km": round(k2, 2), "cues": c2, "n": len(sh2) - 1},
-                    {"name": "Back", "km": round(k3, 2), "cues": c3, "n": len(sh3) - 1}],
+    total = 0.0; shape = []; legs = []
+    for name, pts in LEGS:
+        km, streets, sh, cues = route(pts)
+        total += km
+        shape += sh if not shape else sh[1:]
+        legs.append({"name": name, "km": round(km, 2), "streets": streets, "n": len(sh)})
+        print(f"{km:5.2f} km  {name}  ({' > '.join(streets) or 'paths'})")
+    bad = spurs(shape)
+    if bad:
+        print("WARNING out-and-back spurs at", bad)
+    out = {"km": round(total, 2), "miles": round(total * 0.621371, 2), "start": START,
+           "park": (41.89756, -87.94255), "legs": legs,
            "shape": [[round(a, 6), round(b, 6)] for a, b in shape]}
     Path(__file__).resolve().parent.parent.joinpath("data", "course.json").write_text(json.dumps(out))
-    from spurs import spurs
-    bad = spurs(shape)
-    if bad: print("WARNING out-and-back spurs at", bad)
-    print(f"{km:.2f} km ({km*0.621371:.2f} mi)  out {k1:.2f}  lap {k2:.2f}  back {k3:.2f}")
-    for leg in out["legs"]:
-        print("--", leg["name"]); [print("  ", c["km"], c["text"]) for c in leg["cues"]]
+    print(f"TOTAL {total:.2f} km ({total*0.621371:.2f} mi)")
