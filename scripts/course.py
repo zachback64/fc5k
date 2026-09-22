@@ -25,7 +25,7 @@ LAP = [PARK,
 if __name__ == "__main__":
     k1, s1, sh1, c1 = route(OUT)
     k2, s2, sh2, c2 = route(LAP)
-    k3, s3, sh3, c3 = route(list(reversed(OUT)))
+    k3, s3, sh3, c3 = k1, s1, list(reversed(sh1)), []   # back the way you came
     km = k1 + k2 + k3
     shape = sh1 + sh2[1:] + sh3[1:]
     out = {"km": round(km, 2), "miles": round(km * 0.621371, 2), "start": START, "park": PARK,
