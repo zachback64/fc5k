@@ -9,7 +9,7 @@ import json
 from pathlib import Path
 from valhalla import route
 
-START = (41.8944962, -87.9351743)   # 238 S Kenmore
+START = (41.893837, -87.935259)   # 238 S Kenmore (Census geocoder, house-level)
 PARK = (41.895356, -87.942581)  # Wilder Park east path, where Cottage Hill meets it
 
 OUT = [START, (41.89441, -87.93998), PARK]   # Church St, York, Elmwood Terrace, Cottage Hill
