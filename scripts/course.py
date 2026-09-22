@@ -14,7 +14,9 @@ PARK = (41.895356, -87.942581)      # Wilder Park east path, where you enter fro
 
 OUT = [START, (41.89441, -87.93998), PARK]   # Church St, York, Elmwood Terrace, Cottage Hill
 LAP = [PARK,                        # counter-clockwise, every turn is a left
-       (41.89529, -87.94398),       # into the park, up the middle path
+       (41.89561, -87.94395),       # onto Wilder Park's main path
+       (41.89659, -87.94364),       # the long curve up the middle of the park
+       (41.89755, -87.94440),
        (41.89758, -87.94475),       # out the park's west side at Prospect
        (41.89794, -87.94905),       # left on Alexander, west along the college
        (41.89778, -87.95207),       # left on Fairfield

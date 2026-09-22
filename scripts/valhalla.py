@@ -36,5 +36,11 @@ def route(pts):
             if m.get('instruction') and m['length'] > 0.02:
                 cues.append({'text': m['instruction'], 'km': round(m['length'], 2)})
         pl = decode(leg['shape']); shape += pl[1:] if shape else pl
+    # drop consecutive points closer than ~1.5 m (waypoint snaps duplicate them)
+    clean = [shape[0]]
+    for p in shape[1:]:
+        if abs(p[0] - clean[-1][0]) > 1.4e-5 or abs(p[1] - clean[-1][1]) > 1.8e-5:
+            clean.append(p)
+    shape = clean
     d = []; [d.append(n) for n in names if not d or d[-1] != n]
     return t['summary']['length'], d, shape, cues
