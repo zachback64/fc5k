@@ -11,19 +11,22 @@
 var m=L.map('m'),osm=L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19}).addTo(m),
 sat=L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',{maxZoom:19});
 L.control.layers({Map:osm,Satellite:sat}).addTo(m);
-var line,spurs=[],opts;
+var lines={},cols={0:'#ff1e00',1:'#0044ff',2:'#00a000',3:'#ff8800'},spurs=[],opts;
 Promise.all([fetch('data/options.json',{cache:'no-store'}).then(r=>r.json()),fetch('data/parks.json').then(r=>r.json())]).then(function(r){
   opts=r[0]; r[1].forEach(function(p){L.polygon(p.pts,{color:'#0a0',weight:1,fillOpacity:.25}).addTo(m).bindTooltip(p.name);});
   var p=document.getElementById('p'),first=null;
-  for(var k in opts){var id='o'+Object.keys(opts).indexOf(k);
-    p.insertAdjacentHTML('beforeend','<label><input type="radio" name="o" value="'+k+'"> <b>'+k+'</b> · '+opts[k].km+' km'+(opts[k].spurs.length?' <span class="bad">· '+opts[k].spurs.length+' out-and-back</span>':'')+'<br><small>'+opts[k].blurb+'</small></label>');
+  var i=0,b;
+  for(var k in opts){var c=cols[i++];
+    p.insertAdjacentHTML('beforeend','<label><input type="radio" name="o" value="'+k+'"> <b style="color:'+c+'">'+k+'</b> · '+opts[k].km+' km'+(opts[k].spurs.length?' <span class="bad">· '+opts[k].spurs.length+' out-and-back</span>':'')+'<br><small>'+opts[k].blurb+'</small></label>');
+    lines[k]=L.polyline(opts[k].shape,{color:c,weight:4,opacity:.55}).addTo(m); b=b?b.extend(lines[k].getBounds()):lines[k].getBounds();
     first=first||k;}
+  m.fitBounds(b.pad(0.05));
+  L.marker(opts[first].shape[0],{icon:L.icon({iconUrl:'logo.svg',iconSize:[30,30],iconAnchor:[15,15]})}).addTo(m);
   p.addEventListener('change',function(e){show(e.target.value)});
   p.querySelector('input').checked=true; show(first);
   window.show=show;
 });
-function show(k){if(line){m.removeLayer(line);} spurs.forEach(function(s){m.removeLayer(s)}); spurs=[];
-  line=L.polyline(opts[k].shape,{color:'#ff1e00',weight:5}).addTo(m); m.fitBounds(line.getBounds().pad(0.05));
-  opts[k].spurs.forEach(function(s){spurs.push(L.circleMarker(s,{radius:9,color:'#c00',fillOpacity:.3}).addTo(m))});
-  L.marker(opts[k].shape[0],{icon:L.icon({iconUrl:'logo.svg',iconSize:[30,30],iconAnchor:[15,15]})}).addTo(m);}
+function show(k){for(var j in lines){lines[j].setStyle({weight:4,opacity:.45});} lines[k].setStyle({weight:7,opacity:1}).bringToFront();
+  spurs.forEach(function(s){m.removeLayer(s)}); spurs=[];
+  opts[k].spurs.forEach(function(s){spurs.push(L.circleMarker(s,{radius:9,color:'#c00',fillOpacity:.3}).addTo(m))});}
 </script></body></html>
