@@ -6,7 +6,7 @@
   <title>FC5K — Freezing Cold 5K</title>
   <meta name="description" content="The Freezing Cold 5K. Elmhurst, IL. December 26.">
   <link rel="icon" href="logo.svg">
-  <link rel="stylesheet" href="style.css?v=3">
+  <link rel="stylesheet" href="style.css?v=4">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
 </head>
 <body>
@@ -38,8 +38,19 @@
         <dt>Course</dt><dd>Kenmore to Wilder Park, through Elmhurst University, downtown, and back. 5.05 km / 3.14 mi. No St. Charles crossing.</dd>
         <dt>After</dt><dd>Post race refreshment, award ceremony, party. Bring a change of clothes.</dd>
       </dl>
-      <div id="map" class="map" aria-label="Course map"></div>
-      <p class="mapnote" id="mapnote"></p>
+      <div class="mapwrap">
+        <div id="map" class="map" aria-label="Course map"></div>
+        <div class="mapbar">
+          <button type="button" id="satBtn">Satellite</button>
+          <button type="button" id="fullBtn">Full screen</button>
+          <span id="mapnote"></span>
+        </div>
+      </div>
+      <ol class="cues">
+        <li><b>Out.</b> Kenmore to Church, left on York, right on Elmwood Terrace, right on Cottage Hill, into Wilder Park.</li>
+        <li><b>One lap.</b> Up the park path, across the top, around the college and the football field, back to the park on Elm Park Ave.</li>
+        <li><b>Back.</b> Same way you came. Kenmore is the finish.</li>
+      </ol>
       <p>You don’t have to run the 5K to enjoy the FC5K. Come late, come for five minutes, come whenever your work schedule permits.</p>
     </section>
 
@@ -98,13 +109,15 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
   <script>
     fetch('data/course.json').then(function (r) { return r.json(); }).then(function (c) {
-      var map = L.map('map', { zoomSnap: 0.25, scrollWheelZoom: false, dragging: !L.Browser.mobile, tap: false, attributionControl: true });
-      L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19, attribution: '&copy; OpenStreetMap' }).addTo(map);
-      var line = L.polyline(c.shape, { color: '#ff1e00', weight: 5, opacity: 0.9, lineJoin: 'round' }).addTo(map);
+      var osm = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19, attribution: '&copy; OpenStreetMap' });
+      var sat = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', { maxZoom: 19, attribution: 'Imagery &copy; Esri' });
+      var map = L.map('map', { layers: [osm], zoomSnap: 0.25, scrollWheelZoom: false });
+      var casing = L.polyline(c.shape, { color: '#fff', weight: 9, opacity: 0.9, lineJoin: 'round' }).addTo(map);
+      var line = L.polyline(c.shape, { color: '#ff1e00', weight: 5, opacity: 1, lineJoin: 'round' }).addTo(map);
       map.fitBounds(line.getBounds(), { padding: [24, 24] });
-      var splat = L.icon({ iconUrl: 'logo.svg', iconSize: [34, 34], iconAnchor: [17, 17] });
-      L.marker(c.start, { icon: splat, title: 'Start / finish' }).addTo(map);
-      // km markers along the line
+      L.marker(c.start, { icon: L.icon({ iconUrl: 'logo.svg', iconSize: [34, 34], iconAnchor: [17, 17] }), title: 'Start / finish' }).addTo(map).bindPopup('Start and finish. 238 S Kenmore.');
+      L.marker(c.park, { icon: L.divIcon({ className: 'pin', html: 'LAP', iconSize: [34, 22] }) }).addTo(map).bindPopup('Wilder Park. One lap around the park and the college, then head home.');
+      // km markers
       var d = 0, next = 1, R = 6371000;
       for (var i = 1; i < c.shape.length; i++) {
         var a = c.shape[i - 1], b = c.shape[i];
@@ -113,12 +126,29 @@
         var seg = 2 * R * Math.asin(Math.sqrt(h));
         if (d + seg >= next * 1000 && next <= 4) {
           var t = (next * 1000 - d) / seg;
-          L.marker([a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t], { icon: L.divIcon({ className: 'km', html: next + 'K', iconSize: [26, 26] }) }).addTo(map);
+          L.marker([a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t], { icon: L.divIcon({ className: 'km', html: next + 'K', iconSize: [26, 26] }), interactive: false }).addTo(map);
           next++;
         }
         d += seg;
       }
-      document.getElementById('mapnote').textContent = c.km + ' km / ' + c.miles + ' mi · start and finish at the splat · tap the map to zoom';
+      document.getElementById('mapnote').textContent = c.km + ' km / ' + c.miles + ' mi';
+      var satBtn = document.getElementById('satBtn'), onSat = false;
+      satBtn.onclick = function () {
+        onSat = !onSat;
+        if (onSat) { map.removeLayer(osm); sat.addTo(map); satBtn.textContent = 'Map'; }
+        else { map.removeLayer(sat); osm.addTo(map); satBtn.textContent = 'Satellite'; }
+        casing.bringToFront(); line.bringToFront();
+      };
+      var fullBtn = document.getElementById('fullBtn'), wrap = document.querySelector('.mapwrap');
+      function setFull(on) {
+        wrap.classList.toggle('full', on);
+        document.body.classList.toggle('noscroll', on);
+        fullBtn.textContent = on ? 'Close' : 'Full screen';
+        map.scrollWheelZoom[on ? 'enable' : 'disable']();
+        setTimeout(function () { map.invalidateSize(); map.fitBounds(line.getBounds(), { padding: [24, 24] }); }, 50);
+      }
+      fullBtn.onclick = function () { setFull(!wrap.classList.contains('full')); };
+      document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && wrap.classList.contains('full')) setFull(false); });
     });
     (function () {
       var gun = new Date('2026-12-26T15:00:00-06:00'), el = document.getElementById('countdown');

@@ -99,8 +99,17 @@ footer { text-align: center; padding: 2rem 1.5rem 3rem; color: var(--mute); font
 .count { color: var(--mute); margin-top: 1rem; }
 ul { padding-left: 1.2rem; }
 
-.map { width: 100%; height: 62vh; min-height: 340px; max-height: 620px; margin-top: 1.2rem; border: 3px solid var(--ink); background: #eee; }
-.mapnote { color: var(--mute); font-size: 0.85rem; }
+.mapwrap { margin-top: 1.2rem; border: 3px solid var(--ink); background: #eee; }
+.map { width: 100%; height: 62vh; min-height: 340px; max-height: 620px; }
+.mapbar { display: flex; gap: 0.5rem; align-items: center; padding: 0.5rem; background: #fff; border-top: 3px solid var(--ink); font-size: 0.85rem; color: var(--mute); }
+.mapbar button { font: 600 0.85rem Inter, sans-serif; background: var(--ink); color: #fff; border: 0; padding: 0.45rem 0.8rem; cursor: pointer; }
+.mapbar button:hover { background: var(--red); }
+.mapwrap.full { position: fixed; inset: 0; z-index: 1000; margin: 0; border: 0; display: flex; flex-direction: column; }
+.mapwrap.full .map { flex: 1; height: auto; max-height: none; }
+body.noscroll { overflow: hidden; }
+.pin { background: var(--ink); color: #fff; font: 700 11px/22px Inter, sans-serif; text-align: center; border-radius: 4px; }
+.cues { padding-left: 1.4rem; margin: 1rem 0 0; }
+.cues li { margin: 0.4rem 0; }
 .km { background: var(--ink); color: #fff; border-radius: 50%; font: 700 11px/26px Inter, sans-serif; text-align: center; }
 .leaflet-container { font-family: inherit; }
 @media (max-width: 600px) {
