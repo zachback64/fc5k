@@ -1,0 +1,13 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//FC5K//Nueve//EN
+CALSCALE:GREGORIAN
+BEGIN:VEVENT
+UID:nueve-2026@fc5k.org
+DTSTAMP:20260922T000000Z
+DTSTART:20261226T200000Z
+SUMMARY:FC5K Nueve — Freezing Cold 5K
+LOCATION:Elmhurst\, Illinois
+DESCRIPTION:Gather at 2 PM Central. Gun at 3 PM. Party after.\nBring warm layers and a change of clothes.
+END:VEVENT
+END:VCALENDAR

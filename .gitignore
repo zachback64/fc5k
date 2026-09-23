@@ -2,3 +2,9 @@ data/private/
 photos/private/
 .DS_Store
 admin/
+
+__pycache__/
+*.pyc
+.env
+.env.*
+.vercel
