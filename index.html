@@ -107,7 +107,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
   <script>
     fetch('data/course.json', { cache: 'no-store' }).then(function (r) { return r.json(); }).then(function (c) {
-      var osm = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19, attribution: '&copy; OpenStreetMap' });
+      var osm = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19, attribution: '&copy; OpenStreetMap', referrerPolicy: 'strict-origin-when-cross-origin' });
       var sat = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', { maxZoom: 19, attribution: 'Imagery &copy; Esri' });
       var map = L.map('map', { layers: [osm], zoomSnap: 0.25, scrollWheelZoom: true });
       var casing = L.polyline(c.shape, { color: '#fff', weight: 9, opacity: 0.9, lineJoin: 'round' }).addTo(map);

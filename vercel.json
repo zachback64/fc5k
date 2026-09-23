@@ -5,9 +5,14 @@
   "outputDirectory": ".",
   "functions": {
     "api/index.py": {
-      "includeFiles": "{server/**,index.html,history.html,rsvp.html,host.html,style.css,logo.svg,event.ics,assets/**,data/course.json,photos/public/**}",
+      "includeFiles": "{server/**,index.html,history.html,rsvp.html,host.html,style.css,logo.svg,event.ics,assets/**,data/course.json,data/trail-review.json,trails.html,photos/public/**}",
       "maxDuration": 30
     }
   },
-  "routes": [{"src": "/(.*)", "dest": "/api/index.py?_route=$1"}]
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "/api/index.py?_route=$1"
+    }
+  ]
 }

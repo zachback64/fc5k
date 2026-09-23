@@ -128,6 +128,8 @@ class Handler(BaseHTTPRequestHandler):
                  '/rsvp': 'rsvp.html', '/rsvp.html': 'rsvp.html', '/host': 'host.html',
                  '/style.css': 'style.css', '/logo.svg': 'logo.svg',
                  '/assets/rsvp.js': 'assets/rsvp.js', '/assets/host.js': 'assets/host.js',
+                 '/trails': 'trails.html', '/trails.html': 'trails.html',
+                 '/assets/trails.js': 'assets/trails.js', '/data/trail-review.json': 'data/trail-review.json',
                  '/data/course.json': 'data/course.json', '/event.ics': 'event.ics'}
         filename = files.get(path)
         if not filename and path.startswith('/photos/public/'):
