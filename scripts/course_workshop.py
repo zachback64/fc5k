@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Build six draft 5,000 m courses from routed source geometry.
+"""Build seven draft 5,000 m courses from routed source geometry.
 
 Distances are cumulative haversine lengths, not race certification. Only trim
 along routed segments; never add a straight connector to make a route fit.
@@ -72,6 +72,7 @@ YORK_PATH = crossing('York at the Prairie Path',41.884497,-87.939999)
 SPRING_PATH = crossing('Spring at the Prairie Path',41.885245,-87.94965)
 YORK_CHURCH = crossing('York at Church',41.894496,-87.940055)
 CROSSINGS = {
+    'orchard-loop':[crossing('St. Charles at Hill',41.8901395,-87.9344337),YORK_PATH,SPRING_PATH,crossing('St. Charles at Spring',41.890321,-87.949673),YORK_CHURCH],
     'prairie-west':[YORK_CHURCH,crossing('St. Charles at Spring',41.890321,-87.949673),YORK_PATH,KENILWORTH],
     'prairie-east':[KENILWORTH],
     'green':[crossing('York near Adelaide',41.89862,-87.94006),crossing('York at Adelia',41.892303,-87.940068)],
@@ -91,6 +92,10 @@ def build():
         extensions[direction]=route([home,end])[2]
         assert distance(home,extensions[direction][0])<2
     choices=[
+      ('orchard-loop','Orchard & Prairie Path loop',sources['Orchard west loop'],'south','Loop · finish just before home',
+       'Kenmore → Hill → Orchard → Kenilworth → Prairie Path west → Spring / Hagans → Church → Kenilworth → Adelia → Kenmore.',
+       'Passes South Hill / Orchard, then makes a full western loop. No turnaround; finishes just short of home.',
+       'Crosses St. Charles at Hill and Spring, York at the trail and Church, and Spring at the trail. Includes about 65 m beside St. Charles between Kenmore and Hill.'),
       ('prairie-west','Prairie Path west loop',sources['West separate crossings'],'south','Loop · finish just before home',
        'Kenmore → Marion → Kenilworth → Church → Hagans / Spring → Prairie Path east → Kenilworth → Adelia → Kenmore.',
        'A trail loop with York and St. Charles handled at separate crossings, away from their main junction.',
@@ -137,10 +142,11 @@ def build():
             benefit=benefit,caution=caution,backtrack_m=round(reverse_length(shape)),
             turnaround=shape[(len(shape)-1)//2] if not direction else None,
             crossings=CROSSINGS[key],
+            landmarks=[{'name':'South Hill / Orchard','point':[41.887966,-87.934592]}] if key=='orchard-loop' else [],
             markers=[{'km':k,'point':trim(shape,k*1000)[-1]} for k in range(1,5)]))
         print(f'{name}: {length(shape):.2f} m; finish {offset:.0f} m from start; reversed edges {reverse_length(shape):.0f} m')
     output={'date':'2026-09-23','distance_method':'5,000 m cumulative haversine distance on routed geometry; not a certified course.',
-            'start_description':'Street start by the house on Kenmore; all six use the same point.',
+            'start_description':'Street start by the house on Kenmore; all seven use the same point.',
             'home':home,'avoided_junction':YORK_ST_CHARLES,'routes':routes}
     (ROOT/'data/course-workshop.json').write_text(json.dumps(output,separators=(',',':'))+'\n')
 

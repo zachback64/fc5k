@@ -5,12 +5,12 @@
     const response = await fetch('data/course-workshop.json');
     if (!response.ok) throw new Error('Course data unavailable.');
     const data = await response.json();
-    const colors = ['#e53612','#1263a0','#278452','#9b4cb0','#bf7900','#526474'];
+    const colors = ['#087f8c','#e53612','#1263a0','#278452','#9b4cb0','#bf7900','#526474'];
     const map = L.map('review-map', {scrollWheelZoom:false,zoomSnap:.25}).setView(data.home,14);
     const streets = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',referrerPolicy:'strict-origin-when-cross-origin',maxZoom:19}).addTo(map);
     const satellite = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',{attribution:'Imagery &copy; Esri',maxZoom:19});
     L.control.layers({Streets:streets,Satellite:satellite}).addTo(map);
-    L.circle(data.avoided_junction,{radius:100,color:'#9b2525',weight:1,dashArray:'4 5',fillOpacity:.08}).addTo(map).bindPopup('Avoided: York / St. Charles. All six routes stay outside this 100 m buffer.');
+    L.circle(data.avoided_junction,{radius:100,color:'#9b2525',weight:1,dashArray:'4 5',fillOpacity:.08}).addTo(map).bindPopup('Avoided: York / St. Charles. All seven routes stay outside this 100 m buffer.');
     const lines = {}, buttons = {}, pins = L.layerGroup().addTo(map);
     let selected;
     function element(tag,text,className) { const e=document.createElement(tag);e.textContent=text;if(className)e.className=className;return e; }
@@ -47,6 +47,7 @@
       }
       for(const marker of markerGroups.values())L.marker(marker.point,{icon:L.divIcon({className:'distance-pin',html:marker.kms.join('/'),iconSize:[30,26],iconAnchor:[15,13]})}).addTo(pins).bindPopup(`${marker.kms.join(' and ')} km from the start`);
       if(route.turnaround)L.marker(route.turnaround,{icon:L.divIcon({className:'finish-pin',html:'↶',iconSize:[26,23],iconAnchor:[13,12]})}).addTo(pins).bindPopup('Turn around here · 2.50 km');
+      for(const landmark of route.landmarks || [])L.marker(landmark.point,{icon:L.divIcon({className:'distance-pin',html:'★',iconSize:[30,26],iconAnchor:[15,13]})}).addTo(pins).bindPopup(landmark.name);
       for(const crossing of route.crossings)L.circleMarker(crossing.point,{radius:7,color:'#442e0b',weight:2,fillColor:'#f4bd54',fillOpacity:1}).addTo(pins).bindPopup(crossing.name+' · road crossing; check on foot');
       document.querySelector('#map-label').textContent=route.name;
       document.querySelector('#route-kind').textContent=route.kind;

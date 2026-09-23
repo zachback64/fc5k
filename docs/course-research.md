@@ -72,3 +72,8 @@ Supersedes the earlier six-option descriptions above. User requested separate cr
 - Three out-and-backs now finish at the house; all six remain 5,000 m cumulative mapped geometry.
 
 Kenilworth connector and road geometry checked against the OpenStreetMap API map extract (bbox -87.952,41.883,-87.928,41.895), with pedestrian routes from Valhalla. Sources are retained in option-samples.json. Amber map dots identify selected crossings of York, St. Charles, and Spring; repeated out-and-back crossings share a dot. These are not a comprehensive inventory of minor-road crossings or verified signal timing. Separate crossings may still require waiting.
+
+
+## Orchard loop addition — 2026-09-23
+
+Prefer loops; retain east Prairie out-and-back as a simplicity fallback. Added a seventh candidate via South Hill / Orchard (41.887966, -87.934592), verified as a shared intersection node in OpenStreetMap. The course runs south via Hill, west on Orchard, south on Kenilworth and the South Street connector, west on the Prairie Path, north on Spring / Hagans, east via Church, and homeward via Kenilworth / Adelia. 5,000 m mapped length ends about 26 m south of the original street start. No turnaround. Keeps the York / St. Charles exclusion. Crossings and a neutral intersection marker are shown; no resident identity is published. Source geometry is retained under Orchard west loop in option-samples.json.

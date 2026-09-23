@@ -11,7 +11,7 @@ from course_workshop import distance,length,trim,segment_distance,YORK_ST_CHARLE
 class CourseTest(unittest.TestCase):
     def test_every_option_is_5000_meters_from_the_house(self):
         data=json.loads((ROOT/'data/course-workshop.json').read_text())
-        self.assertEqual(len(data['routes']),6)
+        self.assertEqual(len(data['routes']),7)
         for course in data['routes']:
             with self.subTest(course=course['id']):
                 self.assertAlmostEqual(length(course['shape']),5000,places=2)
@@ -35,6 +35,14 @@ class CourseTest(unittest.TestCase):
             with self.subTest(course=course['id']):
                 clearance=min(segment_distance(YORK_ST_CHARLES,a,b) for a,b in zip(course['shape'],course['shape'][1:]))
                 self.assertGreater(clearance,100)
+
+    def test_orchard_loop_passes_requested_corner_without_turnaround(self):
+        data=json.loads((ROOT/'data/course-workshop.json').read_text())
+        course=next(c for c in data['routes'] if c['id']=='orchard-loop')
+        self.assertIsNone(course['turnaround'])
+        self.assertLess(min(distance(p,[41.887966,-87.934592]) for p in course['shape']),10)
+        self.assertLess(course['finish_offset_m'],30)
+        self.assertLess(course['backtrack_m'],50)
 
     def test_trim_refuses_to_invent_distance(self):
         with self.assertRaises(ValueError):
