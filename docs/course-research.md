@@ -59,3 +59,16 @@ The workshop now offers six 5,000 m alternatives, all using the same street star
 The west-side out-and-back is a road-heavy comparison toward the western parks, not a woodland run. Its 2.5 km budget does not allow a substantial Salt Creek section. Shared segments and crossing tradeoffs are stated on each card. The original event route remains unchanged.
 
 `python3 scripts/course_workshop.py` rebuilds `data/course-workshop.json` from the stored route samples and refreshed Kenmore continuation routing. `tests/test_courses.py` verifies 5,000 m totals, common starts, nearby finishes, kilometre markers, and 2,500 m turnarounds. These numerical tests do not certify the distance on the ground.
+
+
+## Continuous-running revision — 2026-09-23
+
+Supersedes the earlier six-option descriptions above. User requested separate crossings of busy roads, avoiding major junctions such as York / St. Charles. All six final polylines now clear a 100 m buffer around that junction (41.890296, -87.940064); the test checks whole segments, not only vertices.
+
+- West Prairie loop uses Marion / Kenilworth / Church outbound, Spring to the trail, then the South Street connector / Kenilworth / Adelia homeward. Finishes about 128 m south of the house.
+- East Prairie option is now an out-and-back via Kenilworth, avoiding York entirely.
+- West Prairie out-and-back uses Kenilworth, crossing York separately at the trail.
+- Glos/Wilder, campus, and west-side options remain north of St. Charles.
+- Three out-and-backs now finish at the house; all six remain 5,000 m cumulative mapped geometry.
+
+Kenilworth connector and road geometry checked against the OpenStreetMap API map extract (bbox -87.952,41.883,-87.928,41.895), with pedestrian routes from Valhalla. Sources are retained in option-samples.json. Amber map dots identify selected crossings of York, St. Charles, and Spring; repeated out-and-back crossings share a dot. These are not a comprehensive inventory of minor-road crossings or verified signal timing. Separate crossings may still require waiting.

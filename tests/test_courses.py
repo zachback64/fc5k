@@ -5,7 +5,7 @@ import unittest
 
 ROOT=Path(__file__).resolve().parents[1]
 sys.path.insert(0,str(ROOT/'scripts'))
-from course_workshop import distance,length,trim
+from course_workshop import distance,length,trim,segment_distance,YORK_ST_CHARLES
 
 
 class CourseTest(unittest.TestCase):
@@ -24,10 +24,17 @@ class CourseTest(unittest.TestCase):
     def test_out_and_backs_return_home_and_turn_at_halfway(self):
         data=json.loads((ROOT/'data/course-workshop.json').read_text())
         courses=[c for c in data['routes'] if c['turnaround']]
-        self.assertEqual(len(courses),2)
+        self.assertEqual(len(courses),3)
         for c in courses:
             self.assertEqual(c['start'],c['finish'])
             self.assertLess(distance(c['turnaround'],trim(c['shape'],2500)[-1]),.01)
+
+    def test_routes_avoid_york_st_charles_junction(self):
+        data=json.loads((ROOT/'data/course-workshop.json').read_text())
+        for course in data['routes']:
+            with self.subTest(course=course['id']):
+                clearance=min(segment_distance(YORK_ST_CHARLES,a,b) for a,b in zip(course['shape'],course['shape'][1:]))
+                self.assertGreater(clearance,100)
 
     def test_trim_refuses_to_invent_distance(self):
         with self.assertRaises(ValueError):

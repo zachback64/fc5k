@@ -53,6 +53,34 @@ def reverse_length(shape):
     return repeated
 
 
+YORK_ST_CHARLES = [41.890296, -87.940064]
+
+def segment_distance(point, a, b):
+    # Local tangent-plane projection, adequate for this small junction buffer.
+    scale = math.cos(math.radians(point[0]))
+    ax, ay = (a[1]-point[1])*scale, a[0]-point[0]
+    bx, by = (b[1]-point[1])*scale, b[0]-point[0]
+    dx, dy = bx-ax, by-ay
+    t = max(0, min(1, -(ax*dx+ay*dy)/(dx*dx+dy*dy))) if dx*dx+dy*dy else 0
+    return distance(point, [a[0]+t*(b[0]-a[0]), a[1]+t*(b[1]-a[1])])
+
+def crossing(name, lat, lon):
+    return {'name':name, 'point':[lat,lon]}
+
+KENILWORTH = crossing('St. Charles at Kenilworth',41.890262,-87.938453)
+YORK_PATH = crossing('York at the Prairie Path',41.884497,-87.939999)
+SPRING_PATH = crossing('Spring at the Prairie Path',41.885245,-87.94965)
+YORK_CHURCH = crossing('York at Church',41.894496,-87.940055)
+CROSSINGS = {
+    'prairie-west':[YORK_CHURCH,crossing('St. Charles at Spring',41.890321,-87.949673),YORK_PATH,KENILWORTH],
+    'prairie-east':[KENILWORTH],
+    'green':[crossing('York near Adelaide',41.89862,-87.94006),crossing('York at Adelia',41.892303,-87.940068)],
+    'campus':[crossing('York near Adelaide',41.898475,-87.94007),YORK_CHURCH],
+    'prairie-return':[KENILWORTH,YORK_PATH,SPRING_PATH],
+    'west-return':[YORK_CHURCH],
+}
+
+
 def build():
     sources=json.loads((ROOT/'docs/option-samples.json').read_text())
     current=json.loads((ROOT/'data/course.json').read_text())
@@ -63,14 +91,14 @@ def build():
         extensions[direction]=route([home,end])[2]
         assert distance(home,extensions[direction][0])<2
     choices=[
-      ('prairie-west','Prairie Path west loop',west,'north','Loop + short finish extension',
-       'Church → Hagans / Spring → Prairie Path east → York → Adelia → Kenmore.',
-       'The strongest continuous trail corridor in the heatmap; approximately 920 m on the Prairie Path.',
-       'Crosses St. Charles twice. The finish extension retraces the opening stretch of Kenmore.'),
-      ('prairie-east','Prairie Path east loop',sources['Prairie east via Church'],'north','Loop + short finish extension',
-       'Church → York → Prairie Path east → Fair → St. Charles → Kenmore.',
-       'An east-side alternative with a longer eastward trail section.',
-       'Crosses St. Charles twice and uses a stretch beside it. Check the small routed jog near Fair / May.'),
+      ('prairie-west','Prairie Path west loop',sources['West separate crossings'],'south','Loop · finish just before home',
+       'Kenmore → Marion → Kenilworth → Church → Hagans / Spring → Prairie Path east → Kenilworth → Adelia → Kenmore.',
+       'A trail loop with York and St. Charles handled at separate crossings, away from their main junction.',
+       'Crosses St. Charles at Spring and Kenilworth, and York at Church and the Prairie Path. Single-road crossings can still require a wait.'),
+      ('prairie-east','Prairie Path east out & back',sources['Prairie east outbound'],None,'Out & back · home finish',
+       'Adelia → Kenilworth → South Street connector → Prairie Path east → marked 2.50 km turnaround → same way home.',
+       'Avoids York entirely. Crosses St. Charles at Kenilworth on the way out and back.',
+       'Kenilworth / St. Charles still needs a crossing check. The turnaround is on the trail; mark it before the run.'),
       ('green','Glos, Wilder & quad',current,'north','Park circuit + short finish extension',
        'Glos → Wilder → university quad → Wilder garden path → York → Adelia → Kenmore.',
        'Closest to the existing event course; more park and campus paths.',
@@ -79,14 +107,14 @@ def build():
        'Kenmore / Arlington → Park → Wilder → Church → Hagans / Fairfield → Alexander → Prospect → Church → Kenmore.',
        'A larger campus circuit with fewer tiny garden turns.',
        'No St. Charles crossing. Some shared park/approach segments; verify campus access.'),
-      ('prairie-return','Prairie Path out & back',sources['Prairie outbound'],None,'Out & back · home finish',
-       'Adelia → York → Prairie Path west → marked 2.50 km turnaround → same way home.',
-       'Exact same mapped start and finish. More time on the strong Prairie Path corridor.',
-       'Crosses St. Charles twice. Full route is shared in both directions; the turnaround needs marking.'),
+      ('prairie-return','Prairie Path west out & back',sources['Prairie west outbound'],None,'Out & back · home finish',
+       'Adelia → Kenilworth → South Street connector → Prairie Path west → marked 2.50 km turnaround → same way home.',
+       'Returns home exactly, crossing St. Charles at Kenilworth and York separately at the Prairie Path.',
+       'Also crosses Spring on the trail. Each road crossing is repeated on the return and can still require a wait.'),
       ('west-return','West-side out & back',sources['Creek outbound'],None,'Out & back · home finish',
        'Church → Hagans / Elm Park → West Avenue → marked 2.50 km turnaround → same way home.',
        'A comparison option toward the western parks with an exact home finish.',
-       'The 2.50 km turnaround is near the St. Charles corridor, before a substantial woodland section. Inspect that roadside approach.'),
+       'Stays north of St. Charles. Crosses York at Church twice; the western residential approach also crosses Prospect and West Avenue.'),
     ]
     routes=[]
     for key,name,source,direction,kind,description,benefit,caution in choices:
@@ -99,6 +127,7 @@ def build():
         else:
             outward=trim(shape,2500)
             shape=outward+list(reversed(outward[:-1]))
+        assert min(segment_distance(YORK_ST_CHARLES,a,b) for a,b in zip(shape,shape[1:])) > 100
         assert abs(length(shape)-5000)<.01
         assert distance(shape[0],home)<.01
         offset=distance(shape[-1],home)
@@ -107,11 +136,12 @@ def build():
             finish_offset_m=round(offset),finish_direction=direction,kind=kind,description=description,
             benefit=benefit,caution=caution,backtrack_m=round(reverse_length(shape)),
             turnaround=shape[(len(shape)-1)//2] if not direction else None,
+            crossings=CROSSINGS[key],
             markers=[{'km':k,'point':trim(shape,k*1000)[-1]} for k in range(1,5)]))
         print(f'{name}: {length(shape):.2f} m; finish {offset:.0f} m from start; reversed edges {reverse_length(shape):.0f} m')
     output={'date':'2026-09-23','distance_method':'5,000 m cumulative haversine distance on routed geometry; not a certified course.',
             'start_description':'Street start by the house on Kenmore; all six use the same point.',
-            'home':home,'routes':routes}
+            'home':home,'avoided_junction':YORK_ST_CHARLES,'routes':routes}
     (ROOT/'data/course-workshop.json').write_text(json.dumps(output,separators=(',',':'))+'\n')
 
 
