@@ -1,0 +1,44 @@
+.workshop { max-width: 84rem; padding: 2.5rem 2rem 4rem; }
+.workshop h1 { font-size: clamp(2.5rem, 6vw, 5.5rem); color: var(--red); margin: 1rem 0; }
+.intro { color: var(--mute); max-width: 48rem; }
+.workshop-grid { display: grid; grid-template-columns: 20rem minmax(0,1fr); gap: 1.5rem; margin-top: 2.5rem; align-items: start; }
+.list-heading { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
+.list-heading h2 { font-size: 1.4rem; color: var(--ink); margin: 0; }
+.list-heading span { font-size: .75rem; color: var(--mute); }
+.route-list { display: grid; gap: .65rem; }
+.route-card { position: relative; width: 100%; text-align: left; background: white; padding: 1.05rem 1.1rem; font: inherit; cursor: pointer; border: 1px solid #dedbd5; border-left: 5px solid var(--route-color); border-radius: 6px; transition: background-color 150ms ease, box-shadow 150ms ease; }
+.route-card:hover { background: #f7f4ee; }
+.route-card[aria-pressed=true] { background: #fff0e9; box-shadow: 0 0 0 2px var(--ink); border-color: transparent; border-left-color: var(--route-color); }
+.route-card strong { display: block; font-size: .98rem; line-height: 1.35; }
+.route-card .card-type { display: block; color: var(--mute); font-size: .73rem; margin: .35rem 0 .8rem; }
+.card-bottom { display: flex; justify-content: space-between; gap: .5rem; font-size: .75rem; font-variant-numeric: tabular-nums; }
+.home-badge { color: #216744; font-weight: 600; }
+.map-panel { min-width: 0; background: white; border-radius: 10px; overflow: hidden; box-shadow: 0 0 0 1px rgba(0,0,0,.07),0 8px 24px rgba(0,0,0,.04); }
+.map-toolbar { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: .5rem 1rem; font-size: .8rem; min-height: 52px; }
+.map-toolbar p { font-weight: 600; }
+.map-toolbar label { display: flex; align-items: center; gap: .35rem; min-height: 40px; white-space: nowrap; }
+.map-toolbar input { width: 17px; height: 17px; min-height: 0; accent-color: var(--red); }
+#review-map { height: 520px; width: 100%; background: var(--ice); }
+.map-key { display: flex; flex-wrap: wrap; gap: 1rem; padding: .8rem 1rem; font-size: .7rem; border-bottom: 1px solid #e4e0d9; }
+.map-key span { display: inline-flex; align-items: center; gap: .35rem; }
+.map-key i { width: 9px; height: 9px; display: inline-block; }
+.key-start { border-radius: 50%; background: #1c7549; }
+.key-finish { background: var(--red); }
+.route-detail { padding: 1.5rem; }
+.route-detail h2 { margin: .5rem 0 1.25rem; font-size: clamp(1.8rem,3vw,2.5rem); color: var(--ink); }
+.route-metrics { display: flex; gap: 2.5rem; margin: 1rem 0 1.5rem; }
+.route-metrics strong { display: block; font-size: 1.8rem; line-height: 1.2; font-variant-numeric: tabular-nums; }
+.route-metrics strong small { font-size: .9rem; }
+.route-metrics span { color: var(--mute); font-size: .7rem; }
+.route-detail > p:not(.eyebrow) { font-size: .9rem; }
+.route-caution { color: #766044; background: #f9f4e9; padding: .75rem; border-radius: 4px; }
+.route-actions { display: flex; gap: .75rem; margin-top: 1.25rem; align-items: center; }
+.method { max-width: 50rem; margin-top: 3rem; }
+.method h2 { font-size: 1.7rem; margin-top: 0; }
+.method p { color: var(--mute); font-size: .85rem; }
+.sources { display: flex; gap: 1rem; flex-wrap: wrap; font-size: .8rem; margin-top: 1rem; }
+.sources a { min-height: 40px; display: inline-flex; align-items: center; }
+.distance-pin { display: flex; align-items: center; justify-content: center; border-radius: 50%; background: white; border: 2px solid var(--ink); color: var(--ink); font: 700 11px Inter,sans-serif; }
+.finish-pin { background: var(--red); color: white; font: 700 11px Inter,sans-serif; display:flex;align-items:center;justify-content:center; border: 2px solid white; border-radius: 3px; box-shadow: 0 1px 4px rgba(0,0,0,.3); }
+@media(max-width: 950px) { .workshop { padding: 1.5rem 1rem 3rem; } .workshop-grid { grid-template-columns: 16rem minmax(0,1fr); gap: 1rem; } #review-map { height: 440px; } }
+@media(max-width: 700px) { .workshop-grid { grid-template-columns: 1fr; margin-top: 1.5rem; } .route-list { grid-template-columns: repeat(2,minmax(0,1fr)); gap: .6rem; } .route-card { padding: .8rem; } .route-card strong { font-size: .82rem; } .card-bottom { flex-direction: column; gap: .2rem; } .route-card .card-type { font-size: .65rem; margin-bottom: .5rem; } #review-map { height: 430px; } .route-detail { padding: 1rem; } .route-actions { flex-wrap: wrap; } }

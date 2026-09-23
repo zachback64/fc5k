@@ -42,3 +42,20 @@ Valhalla pedestrian routing on September 23 produced a **4.83 km** house-start l
 A western extension trial returned 8.31 km with unwanted detours around the creek corridor. It is rejected as a 5K candidate; it is retained only in `docs/trail-drafts.json` to document the routing result.
 
 Review map: `/trails` (uses `data/trail-review.json`).
+
+## Six-course workshop
+
+The workshop now offers six 5,000 m alternatives, all using the same street start by the house. Distances use cumulative haversine lengths of the routed shape. The final point is interpolated on an existing routed segment, with no invented off-road connector. Short loops continue on a pedestrian-routed stretch of Kenmore to reach 5K. Out-and-backs turn at precisely 2,500 mapped metres.
+
+| Option | Finish |
+| --- | --- |
+| Prairie Path west loop | 178 m north of home |
+| Prairie Path east loop | 212 m north of home |
+| Glos, Wilder & quad | 103 m north of home |
+| Wilder & campus perimeter | 234 m south of home |
+| Prairie Path out & back | Home |
+| West-side out & back | Home |
+
+The west-side out-and-back is a road-heavy comparison toward the western parks, not a woodland run. Its 2.5 km budget does not allow a substantial Salt Creek section. Shared segments and crossing tradeoffs are stated on each card. The original event route remains unchanged.
+
+`python3 scripts/course_workshop.py` rebuilds `data/course-workshop.json` from the stored route samples and refreshed Kenmore continuation routing. `tests/test_courses.py` verifies 5,000 m totals, common starts, nearby finishes, kilometre markers, and 2,500 m turnarounds. These numerical tests do not certify the distance on the ground.

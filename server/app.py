@@ -129,6 +129,7 @@ class Handler(BaseHTTPRequestHandler):
                  '/style.css': 'style.css', '/logo.svg': 'logo.svg',
                  '/assets/rsvp.js': 'assets/rsvp.js', '/assets/host.js': 'assets/host.js',
                  '/trails': 'trails.html', '/trails.html': 'trails.html',
+                 '/assets/trails.css': 'assets/trails.css', '/data/course-workshop.json': 'data/course-workshop.json',
                  '/assets/trails.js': 'assets/trails.js', '/data/trail-review.json': 'data/trail-review.json',
                  '/data/course.json': 'data/course.json', '/event.ics': 'event.ics'}
         filename = files.get(path)

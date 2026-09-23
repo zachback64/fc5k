@@ -5,7 +5,7 @@
   "outputDirectory": ".",
   "functions": {
     "api/index.py": {
-      "includeFiles": "{server/**,index.html,history.html,rsvp.html,host.html,style.css,logo.svg,event.ics,assets/**,data/course.json,data/trail-review.json,trails.html,photos/public/**}",
+      "includeFiles": "{server/**,index.html,history.html,rsvp.html,host.html,style.css,logo.svg,event.ics,assets/**,data/course.json,data/trail-review.json,data/course-workshop.json,trails.html,photos/public/**}",
       "maxDuration": 30
     }
   },
