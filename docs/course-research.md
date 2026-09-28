@@ -77,3 +77,12 @@ Kenilworth connector and road geometry checked against the OpenStreetMap API map
 ## Orchard loop addition — 2026-09-23
 
 Prefer loops; retain east Prairie out-and-back as a simplicity fallback. Added a seventh candidate via South Hill / Orchard (41.887966, -87.934592), verified as a shared intersection node in OpenStreetMap. The course runs south via Hill, west on Orchard, south on Kenilworth and the South Street connector, west on the Prairie Path, north on Spring / Hagans, east via Church, and homeward via Kenilworth / Adelia. 5,000 m mapped length ends about 26 m south of the original street start. No turnaround. Keeps the York / St. Charles exclusion. Crossings and a neutral intersection marker are shown; no resident identity is published. Source geometry is retained under Orchard west loop in option-samples.json.
+
+
+## Wilder entrance/exit and direction arrows — 2026-09-23
+
+Revised campus option enters at Wilder's southeast corner (Cottage Hill / Church), uses the east-side park walk, crosses the central path, follows the western park walk, and exits at the southwest corner (Prospect / Church). Campus perimeter continues via Hagans, Fairfield and Alexander; return via Prospect / Park / Lawndale stays outside Wilder to avoid a second park traversal. Source length about 4,807 m; extend south from home about 193 m to total 5,000 m.
+
+Valhalla snapped southeast garden waypoints northward and produced U-turns. Replaced the park section with connected OpenStreetMap footways from the map API extract: east walk 1263032322, central 179053591 and connected west-side paths. Includes an approximately 13 m street-center-to-sidewalk connection at the southeast corner; confirm the corner crossing on foot. Raw park shape and source notes retained in option-samples.json. Entry/exit order covered by tests.
+
+Added screen-spaced direction chevrons for every course, refreshed on zoom/pan and selection. Compare-all shows arrows in each route color. Out-and-back arrows are offset to the right in each direction so opposing directions remain distinguishable.

@@ -42,3 +42,5 @@
 .finish-pin { background: var(--red); color: white; font: 700 11px Inter,sans-serif; display:flex;align-items:center;justify-content:center; border: 2px solid white; border-radius: 3px; box-shadow: 0 1px 4px rgba(0,0,0,.3); }
 @media(max-width: 950px) { .workshop { padding: 1.5rem 1rem 3rem; } .workshop-grid { grid-template-columns: 16rem minmax(0,1fr); gap: 1rem; } #review-map { height: 440px; } }
 @media(max-width: 700px) { .workshop-grid { grid-template-columns: 1fr; margin-top: 1.5rem; } .route-list { grid-template-columns: repeat(2,minmax(0,1fr)); gap: .6rem; } .route-card { padding: .8rem; } .route-card strong { font-size: .82rem; } .card-bottom { flex-direction: column; gap: .2rem; } .route-card .card-type { font-size: .65rem; margin-bottom: .5rem; } #review-map { height: 430px; } .route-detail { padding: 1rem; } .route-actions { flex-wrap: wrap; } }
+
+.course-arrow { background: none; border: 0; pointer-events: none; }

@@ -13,6 +13,34 @@
     L.circle(data.avoided_junction,{radius:100,color:'#9b2525',weight:1,dashArray:'4 5',fillOpacity:.08}).addTo(map).bindPopup('Avoided: York / St. Charles. All seven routes stay outside this 100 m buffer.');
     const lines = {}, buttons = {}, pins = L.layerGroup().addTo(map);
     let selected;
+    const arrows = L.layerGroup().addTo(map);
+    function drawArrows() {
+      arrows.clearLayers();
+      if (!selected) return;
+      const all = document.querySelector('#show-all').checked;
+      for (const [index, route] of data.routes.entries()) {
+        if (!all && route.id !== selected.id) continue;
+        const points = route.shape.map(p => map.latLngToLayerPoint(p));
+        let next = 45;
+        for (let i = 1; i < points.length; i++) {
+          const a = points[i-1], b = points[i], dx = b.x-a.x, dy = b.y-a.y, length = Math.hypot(dx,dy);
+          if (!length) continue;
+          while (next <= length) {
+            const offset = route.turnaround ? 6 : 0;
+            const point = L.point(a.x + dx*next/length - dy*offset/length, a.y + dy*next/length + dx*offset/length);
+            const position = map.layerPointToLatLng(point);
+            if (map.getBounds().pad(.1).contains(position)) {
+              const angle = Math.atan2(dy,dx)*180/Math.PI;
+              const html = `<svg width="20" height="20" viewBox="0 0 20 20" style="transform:rotate(${angle}deg);opacity:${route.id===selected.id?1:.55}" aria-hidden="true"><path d="M6 4 L13 10 L6 16" fill="none" stroke="white" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/><path d="M6 4 L13 10 L6 16" fill="none" stroke="${colors[index]}" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+              L.marker(position,{interactive:false,keyboard:false,zIndexOffset:-500,icon:L.divIcon({className:'course-arrow',html,iconSize:[20,20],iconAnchor:[10,10]})}).addTo(arrows);
+            }
+            next += 90;
+          }
+          next -= length;
+        }
+      }
+    }
+    map.on('zoomend moveend',drawArrows);
     function element(tag,text,className) { const e=document.createElement(tag);e.textContent=text;if(className)e.className=className;return e; }
     data.routes.forEach((route,index) => {
       lines[route.id] = L.polyline(route.shape,{color:colors[index],weight:5});
@@ -28,6 +56,7 @@
         line.setStyle({weight:id===selected.id?5:4,opacity:id===selected.id?1:.55});
       }
       lines[selected.id].bringToFront();
+      drawArrows();
     }
     function select(route) {
       selected=route;
@@ -47,7 +76,7 @@
       }
       for(const marker of markerGroups.values())L.marker(marker.point,{icon:L.divIcon({className:'distance-pin',html:marker.kms.join('/'),iconSize:[30,26],iconAnchor:[15,13]})}).addTo(pins).bindPopup(`${marker.kms.join(' and ')} km from the start`);
       if(route.turnaround)L.marker(route.turnaround,{icon:L.divIcon({className:'finish-pin',html:'↶',iconSize:[26,23],iconAnchor:[13,12]})}).addTo(pins).bindPopup('Turn around here · 2.50 km');
-      for(const landmark of route.landmarks || [])L.marker(landmark.point,{icon:L.divIcon({className:'distance-pin',html:'★',iconSize:[30,26],iconAnchor:[15,13]})}).addTo(pins).bindPopup(landmark.name);
+      for(const landmark of route.landmarks || [])L.marker(landmark.point,{icon:L.divIcon({className:'distance-pin',html:landmark.label || '★',iconSize:[30,26],iconAnchor:[15,13]})}).addTo(pins).bindPopup(landmark.name);
       for(const crossing of route.crossings)L.circleMarker(crossing.point,{radius:7,color:'#442e0b',weight:2,fillColor:'#f4bd54',fillOpacity:1}).addTo(pins).bindPopup(crossing.name+' · road crossing; check on foot');
       document.querySelector('#map-label').textContent=route.name;
       document.querySelector('#route-kind').textContent=route.kind;

@@ -76,7 +76,7 @@ CROSSINGS = {
     'prairie-west':[YORK_CHURCH,crossing('St. Charles at Spring',41.890321,-87.949673),YORK_PATH,KENILWORTH],
     'prairie-east':[KENILWORTH],
     'green':[crossing('York near Adelaide',41.89862,-87.94006),crossing('York at Adelia',41.892303,-87.940068)],
-    'campus':[crossing('York near Adelaide',41.898475,-87.94007),YORK_CHURCH],
+    'campus':[YORK_CHURCH,crossing('York at Park',41.899268,-87.940002)],
     'prairie-return':[KENILWORTH,YORK_PATH,SPRING_PATH],
     'west-return':[YORK_CHURCH],
 }
@@ -108,10 +108,10 @@ def build():
        'Glos → Wilder → university quad → Wilder garden path → York → Adelia → Kenmore.',
        'Closest to the existing event course; more park and campus paths.',
        'No St. Charles crossing. Contains the existing short backtracks around park/campus features, plus the finish extension.'),
-      ('campus','Wilder & campus perimeter',sources['Wilder and campus'],'south','Park and campus circuit',
-       'Kenmore / Arlington → Park → Wilder → Church → Hagans / Fairfield → Alexander → Prospect → Church → Kenmore.',
-       'A larger campus circuit with fewer tiny garden turns.',
-       'No St. Charles crossing. Some shared park/approach segments; verify campus access.'),
+      ('campus','Wilder & campus perimeter',sources['Wilder southeast southwest'],'south','Wilder SE → SW · campus circuit',
+       'Church → Wilder southeast entrance → park paths → southwest exit → Hagans / Fairfield → Alexander → Park → Lawndale → Church → Kenmore.',
+       'Enters Wilder at Cottage Hill / Church, follows the east and central park paths, then leaves at Prospect / Church before looping around campus.',
+       'No St. Charles crossing. Crosses York separately at Church and Park. The southeast corner connection and campus access need an on-foot check.'),
       ('prairie-return','Prairie Path west out & back',sources['Prairie west outbound'],None,'Out & back · home finish',
        'Adelia → Kenilworth → South Street connector → Prairie Path west → marked 2.50 km turnaround → same way home.',
        'Returns home exactly, crossing St. Charles at Kenilworth and York separately at the Prairie Path.',
@@ -142,7 +142,7 @@ def build():
             benefit=benefit,caution=caution,backtrack_m=round(reverse_length(shape)),
             turnaround=shape[(len(shape)-1)//2] if not direction else None,
             crossings=CROSSINGS[key],
-            landmarks=[{'name':'South Hill / Orchard','point':[41.887966,-87.934592]}] if key=='orchard-loop' else [],
+            landmarks=[{'name':'South Hill / Orchard','point':[41.887966,-87.934592]}] if key=='orchard-loop' else ([{'name':'Enter Wilder · southeast corner','label':'IN','point':[41.8945138,-87.9425919]},{'name':'Exit Wilder · southwest corner','label':'OUT','point':[41.8945176,-87.9447801]}] if key=='campus' else []),
             markers=[{'km':k,'point':trim(shape,k*1000)[-1]} for k in range(1,5)]))
         print(f'{name}: {length(shape):.2f} m; finish {offset:.0f} m from start; reversed edges {reverse_length(shape):.0f} m')
     output={'date':'2026-09-23','distance_method':'5,000 m cumulative haversine distance on routed geometry; not a certified course.',

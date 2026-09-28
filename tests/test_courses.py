@@ -44,6 +44,16 @@ class CourseTest(unittest.TestCase):
         self.assertLess(course['finish_offset_m'],30)
         self.assertLess(course['backtrack_m'],50)
 
+    def test_campus_uses_southeast_entry_then_southwest_exit(self):
+        data=json.loads((ROOT/'data/course-workshop.json').read_text())
+        course=next(c for c in data['routes'] if c['id']=='campus')
+        shape=course['shape']
+        points=[[41.8945138,-87.9425919],[41.8945176,-87.9447801]]
+        indices=[min(range(len(shape)),key=lambda i:distance(shape[i],p)) for p in points]
+        self.assertLess(indices[0],indices[1])
+        for p,i in zip(points,indices):self.assertLess(distance(p,shape[i]),2)
+        self.assertLess(min(p[1] for p in shape[indices[0]:indices[1]]),-87.9435)
+
     def test_trim_refuses_to_invent_distance(self):
         with self.assertRaises(ValueError):
             trim([[41,-87],[41.001,-87]],5000)
