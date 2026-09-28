@@ -82,6 +82,27 @@ class RSVPTest(unittest.TestCase):
         with app.connect() as db:
             self.assertEqual(db.execute('SELECT status FROM invites WHERE token_hash=?', (app.digest(result['token']),)).fetchone()['status'], 'maybe')
 
+    def test_merch_reservations_update_cancel_and_stay_private(self):
+        _, signup, _ = self.request('/api/public/rsvp', {'name':'Merch test','status':'yes','party_size':1,'activity':'run','notes':''})
+        token=signup['token']
+        payload=dict(token=token,favorite='tee',budget='25',email='test@example.com',items=[dict(product='tee',size='M',quantity=2)])
+        self.assertEqual(self.request('/api/merch/save',payload)[0],200)
+        self.assertEqual(self.request('/api/merch',{'token':token})[1]['response']['items'][0]['quantity'],2)
+        for patch in [dict(items=[dict(product='tee',size='invalid',quantity=1)]),dict(email=''),dict(items=[dict(product='tee',size='M',quantity=True)]),dict(favorite='none'),dict(items=payload['items']*2)]:
+            self.assertEqual(self.request('/api/merch/save',dict(payload,**patch))[0],400)
+        self.assertEqual(self.request('/api/host/merch')[0],401)
+        self.assertEqual(self.request('/api/merch',{'token':'x'*40})[0],404)
+        cookie=self.login()
+        responses=self.request('/api/host/merch',cookie=cookie)[1]['responses']
+        self.assertEqual(next(r for r in responses if r['name']=='Merch test')['items'][0]['quantity'],2)
+        self.assertEqual(self.request('/api/merch/save',dict(payload,items=[],email=''))[0],200)
+        self.assertEqual(self.request('/api/merch',{'token':token})[1]['response']['items'],[])
+        rows=self.request('/api/host/invites',cookie=cookie)[1]['invites']
+        invite=next(r for r in rows if r['name']=='Merch test')
+        replacement=self.request('/api/host/rotate',{'id':invite['id']},cookie)[1]['url'].split('#')[1]
+        self.assertEqual(self.request('/api/merch',{'token':token})[0],404)
+        self.assertEqual(self.request('/api/merch',{'token':replacement})[1]['response']['favorite'],'tee')
+
     def test_privacy_and_auth(self):
         for path in ('/data/private/rsvp.sqlite3', '/admin/', '/server/app.py', '/.git/config', '/photos/public/../../data/private/rsvp.sqlite3'):
             self.assertEqual(self.request(path)[0], 404)

@@ -30,6 +30,7 @@ form.addEventListener('submit', async event => {
     }
     document.querySelector('#edit-link').value = location.href;
     state.textContent = 'RSVP saved.';
+    window.dispatchEvent(new Event('fc5k-rsvp-saved'));
     document.querySelector('#saved h3').textContent = status === 'no' ? 'We’ll miss you.' : status === 'maybe' ? 'We’ll keep our fingers crossed.' : 'You’re on the list.';
     document.querySelector('#saved-summary').textContent = status === 'no' ? 'Thanks for letting us know. If plans change, come back here.' : `${status === 'maybe' ? 'Tentatively' : 'Confirmed'}: ${size} ${size === 1 ? 'person' : 'people'}. December 26, 2026. Gather at 2, gun at 3.`;
     form.hidden = true;

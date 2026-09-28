@@ -58,6 +58,7 @@ async function refresh() {
   document.querySelector('#login').hidden = true;
   document.querySelector('#dashboard').hidden = false;
   render();
+  const merch=await api('/api/host/merch');renderMerch(merch.responses);
 }
 document.querySelector('#login').onsubmit = async event => {
   event.preventDefault();
@@ -85,3 +86,21 @@ document.querySelector('#logout').onclick = async () => {
   catch (error) { state.textContent = error.message; }
 };
 refresh().catch(error => {state.textContent = error.message;});
+
+function renderMerch(responses) {
+  const names={tee:'T-shirt',longsleeve:'Long-sleeve shirt',hoodie:'Hoodie',beanie:'Beanie',none:'No merch'};
+  const budgets={'25':'Up to $25','40':'Up to $40','60':'Up to $60',over60:'Over $60',unsure:'Not sure'};
+  const summary=document.querySelector('#merch-summary');summary.replaceChildren();
+  for(const [id,name] of Object.entries(names)) {
+    const votes=responses.filter(r=>r.favorite===id).length;
+    const quantity=responses.reduce((sum,r)=>sum+r.items.filter(i=>i.product===id).reduce((s,i)=>s+i.quantity,0),0);
+    summary.append(node('p',`${name}: ${votes} ${votes===1?'vote':'votes'}${id==='none'?'':` · ${quantity} ${quantity===1?'unit':'units'} requested`}`));
+  }
+  const sizes={};for(const r of responses)for(const i of r.items){const key=`${names[i.product]} / ${i.size}`;sizes[key]=(sizes[key]||0)+i.quantity;}
+  if(Object.keys(sizes).length)summary.append(node('p','Size totals: '+Object.entries(sizes).map(([key,n])=>`${key}: ${n}`).join(' · ')));
+  const wrapper=document.querySelector('#merch-responses');wrapper.replaceChildren();
+  if(!responses.length){wrapper.append(node('p','No merch responses yet.'));return;}
+  const table=node('table','', 'merch-table'),head=node('thead',''),tr=node('tr','');
+  for(const label of ['Guest','Vote / budget','Reservations','Email'])tr.append(node('th',label));head.append(tr);table.append(head);
+  const body=node('tbody','');for(const r of responses){const row=node('tr','');for(const value of [r.name,`${names[r.favorite]} · ${budgets[r.budget]}`,r.items.map(i=>`${i.quantity} × ${names[i.product]} / ${i.size}`).join(', ')||'None',r.email||'—'])row.append(node('td',value));body.append(row);}table.append(body);wrapper.append(table);
+}

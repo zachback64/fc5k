@@ -192,3 +192,15 @@ input[type=radio] { accent-color: var(--red); width: 18px; height: 18px; }
 @media (max-width: 800px) { .invite-layout { grid-template-columns: 1fr; gap: 2.5rem; padding: 2.5rem 1.25rem 4rem; max-width: 40rem; } .host-grid { grid-template-columns: 1fr; } .topnav { padding: 1rem 1.25rem; } }
 @media (max-width: 480px) { .form-card { padding: 1.25rem; } .stats { grid-template-columns: repeat(2, 1fr); } .guest-row { align-items: flex-start; flex-direction: column; } .event-ticket { gap: 1rem; } .wordmark span { font-size: .6rem; } }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; transition: none !important; } }
+
+/* Optional merch poll and unpaid reservations */
+.merch-panel { max-width: 46rem; margin: 0 auto 3rem; }
+.merch-item { display:grid; grid-template-columns:2fr 1fr 1fr auto; gap:.5rem; align-items:center; margin-bottom:.75rem; }
+.merch-item select,.merch-item input { min-width:0; margin:0; }
+.merch-item button { min-height:44px; }
+.merch-panel h3 { margin-top:2rem; }
+.merch-panel #add-merch { margin-bottom:1rem; }
+.merch-table-wrap { overflow-x:auto; }
+.merch-table { width:100%; border-collapse:collapse; text-align:left; font-size:.85rem; }
+.merch-table th,.merch-table td { padding:.75rem; border-bottom:1px solid #ddd; vertical-align:top; }
+@media(max-width:700px) { .merch-panel { margin:0 1rem 2rem; } .merch-item { grid-template-columns:2fr 1fr; } }

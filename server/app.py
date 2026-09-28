@@ -19,6 +19,37 @@ ORIGIN = os.environ.get('FC5K_ORIGIN', 'http://127.0.0.1:8766').rstrip('/')
 DATABASE_URL = os.environ.get("DATABASE_URL")
 
 
+MERCH = {
+    'tee': {'name': 'T-shirt', 'sizes': ['XS','S','M','L','XL','2XL','3XL']},
+    'longsleeve': {'name': 'Long-sleeve shirt', 'sizes': ['XS','S','M','L','XL','2XL','3XL']},
+    'hoodie': {'name': 'Hoodie', 'sizes': ['XS','S','M','L','XL','2XL','3XL']},
+    'beanie': {'name': 'Beanie', 'sizes': ['One size']},
+}
+
+
+def validate_merch(data):
+    favorite, budget, email, items = (data.get(k) for k in ('favorite','budget','email','items'))
+    if favorite not in (*MERCH, 'none') or budget not in ('unsure','25','40','60','over60'):
+        raise ValueError()
+    if not isinstance(email, str) or len(email) > 254 or not isinstance(items, list) or len(items) > 10:
+        raise ValueError()
+    email = email.strip()
+    if email and (email.count('@') != 1 or '.' not in email.split('@')[1] or any(c.isspace() for c in email)):
+        raise ValueError()
+    if items and (not email or favorite == 'none'):
+        raise ValueError()
+    cleaned=[]; seen=set()
+    for item in items:
+        if not isinstance(item, dict): raise ValueError()
+        product, size, quantity = (item.get(k) for k in ('product','size','quantity'))
+        if not isinstance(product,str) or product not in MERCH or size not in MERCH[product]['sizes'] or type(quantity) is not int or not 1 <= quantity <= 20:
+            raise ValueError()
+        if (product,size) in seen: raise ValueError()
+        seen.add((product,size)); cleaned.append(dict(product=product,size=size,quantity=quantity))
+    if sum(i['quantity'] for i in cleaned) > 20: raise ValueError()
+    return dict(favorite=favorite,budget=budget,email=email,items=cleaned)
+
+
 class PostgresConnection:
     def __init__(self, db):
         self.db = db
@@ -53,6 +84,7 @@ def initialize():
             max_guests INTEGER NOT NULL, status TEXT NOT NULL DEFAULT 'pending',
             party_size INTEGER NOT NULL DEFAULT 0, activity TEXT NOT NULL DEFAULT 'run',
             notes TEXT NOT NULL DEFAULT '', updated_at INTEGER, created_at INTEGER NOT NULL)''')
+        db.execute('CREATE TABLE IF NOT EXISTS merch_responses (invite_id TEXT PRIMARY KEY REFERENCES invites(id), payload TEXT NOT NULL, updated_at INTEGER NOT NULL)')
         db.execute('CREATE TABLE IF NOT EXISTS host_sessions (token_hash TEXT PRIMARY KEY, expires_at INTEGER NOT NULL)')
         db.execute('CREATE TABLE IF NOT EXISTS rate_limits (bucket TEXT PRIMARY KEY, attempts INTEGER NOT NULL, expires_at INTEGER NOT NULL)')
 
@@ -117,6 +149,14 @@ class Handler(BaseHTTPRequestHandler):
 
     def do_GET(self):
         path = urlparse(self.path).path
+        if path == '/api/merch/catalog':
+            return self.send(200, {'products': MERCH})
+        if path == '/api/host/merch':
+            if not self.authorized():
+                return self.send(401, {'error': 'Sign in to continue.'})
+            with connect() as db:
+                rows = db.execute('SELECT i.name,m.payload,m.updated_at FROM merch_responses m JOIN invites i ON i.id=m.invite_id ORDER BY m.updated_at DESC').fetchall()
+            return self.send(200, {'responses': [dict(name=r['name'],updated_at=r['updated_at'],**json.loads(r['payload'])) for r in rows]})
         if path == '/api/host/invites':
             if not self.authorized():
                 return self.send(401, {'error': 'Sign in to continue.'})
@@ -127,7 +167,7 @@ class Handler(BaseHTTPRequestHandler):
         files = {'/': 'index.html', '/index.html': 'index.html', '/history.html': 'history.html',
                  '/rsvp': 'rsvp.html', '/rsvp.html': 'rsvp.html', '/host': 'host.html',
                  '/style.css': 'style.css', '/logo.svg': 'logo.svg',
-                 '/assets/rsvp.js': 'assets/rsvp.js', '/assets/host.js': 'assets/host.js',
+                 '/assets/merch.js': 'assets/merch.js', '/assets/rsvp.js': 'assets/rsvp.js', '/assets/host.js': 'assets/host.js',
                  '/trails': 'trails.html', '/trails.html': 'trails.html',
                  '/assets/trails.css': 'assets/trails.css', '/data/course-workshop.json': 'data/course-workshop.json',
                  '/assets/trails.js': 'assets/trails.js', '/data/trail-review.json': 'data/trail-review.json',
@@ -214,6 +254,20 @@ class Handler(BaseHTTPRequestHandler):
             with connect() as db:
                 db.execute('INSERT INTO invites (id,name,token_hash,max_guests,status,party_size,activity,notes,updated_at,created_at) VALUES (?,?,?,?,?,?,?,?,?,?)', (secrets.token_hex(12), name, digest(token), 20, status, size, activity, notes.strip(), now, now))
             return self.send(201, {'token': token, 'url': ORIGIN + '/rsvp#' + token})
+        if path in ('/api/merch', '/api/merch/save'):
+            token = data.get('token')
+            if not isinstance(token,str) or not 20 <= len(token) <= 100: raise ValueError()
+            if self.rate_limited('merch', 120, 3600):
+                return self.send(429, {'error': 'Too many requests. Try again later.'})
+            with connect() as db:
+                invite = db.execute('SELECT id FROM invites WHERE token_hash=?', (digest(token),)).fetchone()
+                if not invite: return self.send(404, {'error': 'Open your current private RSVP link to save merch choices.'})
+                if path == '/api/merch/save':
+                    payload = validate_merch(data)
+                    db.execute('INSERT INTO merch_responses (invite_id,payload,updated_at) VALUES (?,?,?) ON CONFLICT(invite_id) DO UPDATE SET payload=excluded.payload,updated_at=excluded.updated_at', (invite['id'],json.dumps(payload),int(time.time())))
+                    return self.send(200, {'ok': True})
+                row = db.execute('SELECT payload FROM merch_responses WHERE invite_id=?',(invite['id'],)).fetchone()
+                return self.send(200, {'response': json.loads(row['payload']) if row else None})
         if path in ('/api/invite', '/api/rsvp'):
             token = data.get('token')
             if not isinstance(token, str) or len(token) > 100:

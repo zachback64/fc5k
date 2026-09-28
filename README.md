@@ -95,3 +95,8 @@ If it is not yours, either buy it from the current registrant or pick another do
 - `python3 scripts/build.py` — rebuilds `history.html` (public) and `admin/index.html` (private).
 - `admin/`, `data/private/`, `photos/private/` are gitignored because this repo is public. They hold guest lists, posts, notes and every photo, and only exist on Zach's Mac. Open the admin page with `python3 -m http.server` then `/admin/`.
 - To publish a photo: copy a JPG into `photos/public/<year>/` and rebuild.
+
+
+### Merch poll and unpaid reservations
+
+After an RSVP is saved (or an existing private RSVP link is opened), guests can vote on an item and budget and optionally reserve sizes/quantities with a follow-up email. Reservations are explicitly unpaid and nonbinding; this does not charge money, place supplier orders, or send email. Remove items and save to cancel. One response per RSVP/household; the existing private link controls edits. Hosts see votes, item/size totals, and contacts in `/host`. Initial catalog is `MERCH` in `server/app.py`. SQLite and Postgres initialize the additive `merch_responses` table automatically.
